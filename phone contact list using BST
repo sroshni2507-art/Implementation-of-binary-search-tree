@@ -1,0 +1,225 @@
+class LogNode:
+    def __init__(self, name, time, purpose):
+        self.name = name
+        self.time = time
+        self.purpose = purpose
+        self.left = None
+        self.right = None
+
+
+class LogBookBST:
+    def __init__(self):
+        self.root = None
+
+   
+    def insert(self, root, node):
+        if root is None:
+            return node
+        if node.name < root.name:
+            root.left = self.insert(root.left, node)
+        else:
+            root.right = self.insert(root.right, node)
+        return root
+
+    def add_entry(self, name, time, purpose):
+        new_node = LogNode(name, time, purpose)
+        if self.root is None:
+            self.root = new_node
+        else:
+            self.insert(self.root, new_node)
+        print(f"Entry for '{name}' added successfully.")
+
+    def search(self, root, name):
+        if root is None or root.name == name:
+            return root
+        if name < root.name:
+            return self.search(root.left, name)
+        else:
+            return self.search(root.right, name)
+
+    def find_min(self, node):
+        current = node
+        while current.left is not None:
+            current = current.left
+        return current
+
+    def delete(self, root, name):
+        if root is None:
+            print(f"No entry found for '{name}'.")
+            return root
+        if name < root.name:
+            root.left = self.delete(root.left, name)
+        elif name > root.name:
+            root.right = self.delete(root.right, name)
+        else:
+           
+            if root.left is None and root.right is None:
+                return None
+           
+            elif root.left is None:
+                return root.right
+            elif root.right is None:
+                return root.left
+           
+            temp = self.find_min(root.right)
+            root.name, root.time, root.purpose = temp.name, temp.time, temp.purpose
+            root.right = self.delete(root.right, temp.name)
+            print(f"Entry for '{name}' deleted successfully.")
+        return root
+
+    def remove_entry(self, name):
+        self.root = self.delete(self.root, name)
+
+    
+    def inorder(self, root):
+        if root:
+            self.inorder(root.left)
+            print(f"{root.name} - {root.time} - {root.purpose}")
+            self.inorder(root.right)
+
+    def preorder(self, root):
+        if root:
+            print(f"{root.name} - {root.time} - {root.purpose}")
+            self.preorder(root.left)
+            self.preorder(root.right)
+
+    def postorder(self, root):
+        if root:
+            self.postorder(root.left)
+            self.postorder(root.right)
+            print(f"{root.name} - {root.time} - {root.purpose}")
+
+    
+    def count_entries(self, root):
+        if root is None:
+            return 0
+        return 1 + self.count_entries(root.left) + self.count_entries(root.right)
+
+
+
+if __name__ == "__main__":
+    logbook = LogBookBST()
+
+    while True:
+        print("\n--- LogBook Menu ---")
+        print("1. Add a new entry")
+        print("2. Search for an entry")
+        print("3. Remove an entry")
+        print("4. Display all entries (Inorder)")
+        print("5. Count total entries")
+        print("6. Exit")
+
+        choice = input("Enter your choice: ")
+
+        match choice:
+            case '1':
+                name = input("Enter visitor name: ")
+                time = input("Enter time of visit: ")
+                purpose = input("Enter purpose of visit: ")
+                logbook.add_entry(name, time, purpose)
+            case '2':
+                name = input("Enter name to search: ")
+                s = logbook.search(logbook.root, name)
+                if s:
+                    print(f"Found: Name: {s.name}, Time: {s.time}, Purpose: {s.purpose}")
+                else:
+                    print(f"Entry for '{name}' not found.")
+            case '3':
+                name = input("Enter name to remove: ")
+                logbook.remove_entry(name)
+            case '4':
+                print("\n--- All LogBook Entries (Sorted by Name) ---")
+                logbook.inorder(logbook.root)
+            case '5':
+                total = logbook.count_entries(logbook.root)
+                print(f"Total entries in the LogBook: {total}")
+            case '6':
+                print("Exiting LogBook application. Goodbye!")
+                break
+            case _:
+                print("Invalid choice. Please try again.")
+
+
+
+output:
+
+--- LogBook Menu ---
+1. Add a new entry
+2. Search for an entry
+3. Remove an entry
+4. Display all entries (Inorder)
+5. Count total entries
+6. Exit
+Enter your choice: 1
+Enter visitor name: alice
+Enter time of visit: 10.00
+Enter purpose of visit: the
+Entry for 'alice' added successfully.
+
+--- LogBook Menu ---
+1. Add a new entry
+2. Search for an entry
+3. Remove an entry
+4. Display all entries (Inorder)
+5. Count total entries
+6. Exit
+Enter your choice: 1
+Enter visitor name: roshni
+Enter time of visit: 2.00
+Enter purpose of visit: search
+Entry for 'roshni' added successfully.
+
+--- LogBook Menu ---
+1. Add a new entry
+2. Search for an entry
+3. Remove an entry
+4. Display all entries (Inorder)
+5. Count total entries
+6. Exit
+Enter your choice: 2
+Enter name to search: alice
+Found: Name: alice, Time: 10.00, Purpose: the
+
+--- LogBook Menu ---
+1. Add a new entry
+2. Search for an entry
+3. Remove an entry
+4. Display all entries (Inorder)
+5. Count total entries
+6. Exit
+Enter your choice: 3
+Enter name to remove: alice
+
+--- LogBook Menu ---
+1. Add a new entry
+2. Search for an entry
+3. Remove an entry
+4. Display all entries (Inorder)
+5. Count total entries
+6. Exit
+Enter your choice: 4
+
+--- All LogBook Entries (Sorted by Name) ---
+roshni - 2.00 - search
+
+--- LogBook Menu ---
+1. Add a new entry
+2. Search for an entry
+3. Remove an entry
+4. Display all entries (Inorder)
+5. Count total entries
+6. Exit
+Enter your choice: 5
+Total entries in the LogBook: 1
+
+--- LogBook Menu ---
+1. Add a new entry
+2. Search for an entry
+3. Remove an entry
+4. Display all entries (Inorder)
+5. Count total entries
+6. Exit
+Enter your choice: 6
+Exiting LogBook application. Goodbye!
+
+
